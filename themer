@@ -1,9 +1,11 @@
 #!/usr/bin/python
+
 import argparse
 import asyncio
 import time
 
 from colorschemes import *
+from util.config import apply
 from util.tools import *
 
 
@@ -15,6 +17,15 @@ async def act_args(args: argparse.Namespace) -> bool:
         print(f"finished syncing in {round(time.time() - started,2)}s")
     if args.apply:
         print(f"applying theme {args.apply}")
+        started = time.time()
+        colors = await get_theme(*args.apply.split("-"))
+        async for loc in apply(colors.pallete()):
+            print(
+                f"setting {loc[0]} " + "successful"
+                if not loc[1]
+                else f"failed: {loc[1]}"
+            )
+        print(f"finished applying in {round(time.time() - started,2)}s")
     Catppuccin("latte").color("base", str=False)
 
 

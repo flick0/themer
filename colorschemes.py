@@ -1,9 +1,14 @@
 import json
-from typing import T
+
+
+async def get_theme(theme: str, flavour: str = None):
+    match theme:
+        case "catppuccin":
+            return Catppuccin(flavour)
 
 
 class Catppuccin:
-    def __init__(self, flavour):
+    def __init__(self, flavour="mocha"):
         self.flavour = flavour
         with open("./data/catppuccin.json", "r") as f:
             self.colors = json.load(f)
