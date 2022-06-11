@@ -1,0 +1,43 @@
+#!/usr/bin/python
+import argparse
+import asyncio
+import time
+
+from colorschemes import *
+from util.tools import *
+
+
+async def act_args(args: argparse.Namespace) -> bool:
+    if args.sync:
+        print(f"syncing colors")
+        started = time.time()
+        await catppuccin_scrape()
+        print(f"finished syncing in {round(time.time() - started,2)}s")
+    if args.apply:
+        print(f"applying theme {args.apply}")
+    Catppuccin("latte").color("base", str=False)
+
+
+async def main() -> None:
+    parser = argparse.ArgumentParser()
+    commands = {
+        "apply": {
+            "alias": ("-a", "--apply"),
+            "desc": "apply theme",
+        },
+        "sync": {
+            "alias": ("-s", "--sync"),
+            "desc": "sync colors for available themes",
+            "action": "store_true",
+        },
+    }
+    for option in commands.values():
+        parser.add_argument(
+            *option["alias"], help=option["desc"], action=option.get("action")
+        )
+    args = parser.parse_args()
+    await act_args(args)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
