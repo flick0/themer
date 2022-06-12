@@ -2,33 +2,47 @@
 
 import argparse
 import asyncio
+import subprocess
 import time
 
+import logger
 from colorschemes import *
 from util.config import apply
 from util.tools import *
 
+to_restart = {
+    "xrdb": ["awesome"],
+}
+
 
 async def act_args(args: argparse.Namespace) -> bool:
     if args.sync:
-        print(f"syncing colors")
+        logger.info(f"syncing colors")
         started = time.time()
         await catppuccin_scrape()
-        print(f"finished syncing in {round(time.time() - started,2)}s")
+        logger.log(f"finished syncing in {round(time.time() - started,2)}s")
     if args.apply:
-        print(f"applying theme {args.apply}")
+        logger.info(f"applying theme {args.apply}")
         started = time.time()
         colors = await get_theme(*args.apply.split("-"))
         DARK = False if args.apply.split("-")[1] == "latte" else True
+        restart = []
         async for loc in apply(colors.pallete(), DARK):
-            print(
-                f"setting {loc[0]} " + "successful"
-                if not loc[1]
-                else f"failed: {loc[1]}"
-            )
+            if loc[1]:
+                logger.error(f"setting {loc[0]} failed: {loc[1]}")
+            else:
+                logger.log(f"setting {loc[0]} [green bold]successful")
             if loc[1]:
                 raise loc[1]
-        print(f"finished applying in {round(time.time() - started,2)}s")
+            if loc[0] in to_restart:
+                restart.extend(to_restart[loc[0]])
+        logger.log(f"finished applying in {round(time.time() - started,2)} s")
+        for app in restart:
+            logger.warn(f"[bold]restarting {app}")
+            if app == "awesome":
+                subprocess.run(
+                    ["awesome-client", "awesome.restart()"], stdout=None
+                )
 
 
 async def main() -> None:

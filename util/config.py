@@ -255,7 +255,7 @@ URxvt*depth: 32
 class Code:
     def set(colors: dict, DARK: bool = True) -> None:
         """Set the colors in the code editor."""
-        light_theme = "Quiet Light"
+        light_theme = "Monokai Light"
         dark_theme = "Monokai Pro (Filter Spectrum)"
         template = {
             "workbench.colorCustomizations": {
@@ -333,17 +333,17 @@ class Code:
                 "editor.foreground": colors["text"],
                 "editorLineNumber.foreground": colors["teal"],
                 "editorCursor.foreground": colors["green"],
-                "editorCursor.background": colors["crust"],
-                "editor.selectionBackground": colors["mantle"] + "20",
+                "editorCursor.background": colors["base"],
+                "editor.selectionBackground": colors["rosewater"] + "50",
                 "editor.inactiveSelectionBackground": colors["mantle"] + "20",
                 "editorWhitespace.foreground": colors["yellow"] + "40",
                 "editor.selectionHighlightBackground": colors["mantle"] + "20",
                 "editor.selectionHighlightBorder": colors["lavender"],
                 "editor.findMatchBackground": colors["overlay0"],
                 "editor.findMatchBorder": colors["green"],
-                "editor.findMatchHighlightBackground": colors["green"],
-                "editor.findMatchHighlightBorder": "#ffffff00",
-                "editor.findRangeHighlightBackground": colors["crust"],
+                "editor.findMatchHighlightBackground": colors["surface0"],
+                "editor.findMatchHighlightBorder": colors["green"],
+                "editor.findRangeHighlightBackground": colors["base"],
                 "editor.findRangeHighlightBorder": "#ffffff00",
                 "editor.rangeHighlightBackground": "#ffffff0b",
                 "editor.rangeHighlightBorder": "#ffffff00",
@@ -356,7 +356,7 @@ class Code:
                 "editorIndentGuide.activeBackground": colors["text"],
                 "editorRuler.foreground": colors["subtext0"],
                 "editorError.foreground": colors["red"],
-                "editorError.background": colors["mantle"],
+                "editorError.background": "#00000000",
                 "editorError.border": "#ffffff00",
                 "editorWarning.foreground": colors["yellow"],
                 "editorWarning.background": "#A9904000",
@@ -466,13 +466,13 @@ class Code:
                 "editorSuggestWidget.border": colors["mauve"],
                 "editorSuggestWidget.foreground": colors["flamingo"],
                 "editorSuggestWidget.highlightForeground": colors["mauve"],
-                "editorSuggestWidget.selectedBackground": colors["green"],
+                "editorSuggestWidget.selectedBackground": colors["surface0"],
                 "editorHoverWidget.foreground": colors["flamingo"],
                 "editorHoverWidget.background": colors["base"],
                 "editorHoverWidget.border": colors["mauve"],
                 "peekView.border": colors["yellow"],
-                "peekViewEditor.background": "#001f33",
-                "peekViewEditorGutter.background": "#001f33",
+                "peekViewEditor.background": colors["crust"],
+                "peekViewEditorGutter.background": colors["crust"],
                 "peekViewEditor.matchHighlightBackground": colors["peach"]
                 + "99",
                 "peekViewEditor.matchHighlightBorder": colors["peach"],
@@ -496,7 +496,7 @@ class Code:
                 "minimapGutter.addedBackground": colors["green"],
                 "minimapGutter.modifiedBackground": colors["sky"],
                 "minimapGutter.deletedBackground": colors["maroon"],
-                "minimap.findMatchHighlight": colors["green"],
+                "minimap.findMatchHighlight": colors["surface0"],
                 "minimap.selectionHighlight": colors["mantle"] + "20",
                 "minimap.errorHighlight": colors["red"],
                 "minimap.warningHighlight": colors["yellow"],
@@ -507,11 +507,15 @@ class Code:
                 "statusBarItem.activeBackground": colors["pink"] + "40",
                 "settings.headerForeground": colors["text"],
                 "settings.focusedRowBackground": colors["mantle"] + "60",
-                "walkThrough.embeddedEditorBackground": "#00000050",
+                "walkThrough.embeddedEditorBackground": colors["crust"],
                 "breadcrumb.activeSelectionForeground": colors["subtext1"],
                 "editorGutter.commentRangeForeground": colors["text"],
                 "debugExceptionWidget.background": colors["mantle"],
                 "debugExceptionWidget.border": colors["green"],
+                "errorLens.errorBackground": colors["red"] + "20",
+                "errorLens.warningBackground": colors["yellow"] + "20",
+                "errorLens.infoBackground": colors["green"] + "20",
+                "errorLens.hintBackground": colors["sky"] + "20",
             },
         }
         with open(paths["code"], "r") as f:
