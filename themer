@@ -19,14 +19,16 @@ async def act_args(args: argparse.Namespace) -> bool:
         print(f"applying theme {args.apply}")
         started = time.time()
         colors = await get_theme(*args.apply.split("-"))
-        async for loc in apply(colors.pallete()):
+        DARK = False if args.apply.split("-")[1] == "latte" else True
+        async for loc in apply(colors.pallete(), DARK):
             print(
                 f"setting {loc[0]} " + "successful"
                 if not loc[1]
                 else f"failed: {loc[1]}"
             )
+            if loc[1]:
+                raise loc[1]
         print(f"finished applying in {round(time.time() - started,2)}s")
-    Catppuccin("latte").color("base", str=False)
 
 
 async def main() -> None:
