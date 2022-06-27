@@ -1,6 +1,7 @@
 import json
 import os
 import subprocess
+import signal
 
 HOME = "/home/{}".format(
     subprocess.run(["whoami"], stdout=subprocess.PIPE).stdout.decode("utf-8")
@@ -12,6 +13,7 @@ paths = {
     "Xresources": f"{HOME}/.Xresources",
     "xrdb_cache": "/tmp/xrdb_cache",
     "code": f"{HOME}/.config/Code/User/settings.json",
+    "eww": f"{HOME}/.config/awesome/config/eww/eww.scss",
 }
 
 
@@ -36,6 +38,11 @@ async def apply(colors: dict, DARK: bool = True) -> tuple[str, str]:
         yield ("code", None)
     except Exception as e:
         yield ("code", e)
+    try:
+        Eww.set(colors)
+        yield ("eww", None)
+    except Exception as e:
+        yield ("eww", e)
 
 
 class Common:
@@ -148,6 +155,8 @@ color15 {lightgray}
         )
         with open(paths["kitty"], "w") as f:
             f.write(conf)
+        if "KITTY_PID" in os.environ:
+            os.kill(int(os.environ["KITTY_PID"]), signal.SIGUSR1)
 
 
 class Xrdb:
@@ -529,3 +538,39 @@ class Code:
             conf["workbench.colorTheme"] = light_theme
         with open(paths["code"], "w") as f:
             json.dump(conf, f, indent=4)
+
+
+class Eww:
+    def set(colors):
+        with open(paths["eww"], "r") as f:
+            _conf = f.read()
+        conf = (
+            _conf.split("// THEMER COLORS")[1]
+            .replace("\n", "")
+            .replace("\t", "")
+            .split(";")
+        )
+        conf = {
+            x.strip(): y.strip()
+            for x, y in [line.split(":") for line in conf if len(line)]
+        }
+        conf["$background"] = colors["crust"]
+        conf["$foreground"] = colors["mauve"]
+        conf["$black"] = colors["mantle"]
+        conf["$gray"] = colors["base"]
+        conf["$red"] = colors["red"]
+        conf["$green"] = colors["green"]
+        conf["$yellow"] = colors["yellow"]
+        conf["$blue"] = colors["blue"]
+        conf["$magenta"] = colors["pink"]
+        conf["$cyan"] = colors["sky"]
+        conf["$white"] = colors["text"]
+        tmp = _conf.split("// THEMER COLORS")
+        tmp[1] = (
+            "// THEMER COLORS\n"
+            + ";\n".join([f"{x}:{y}" for x, y in conf.items()])
+            + ";\n// THEMER COLORS\n"
+        )
+        _conf = "\n".join(tmp)
+        with open(paths["eww"], "w") as f:
+            f.write(_conf)
